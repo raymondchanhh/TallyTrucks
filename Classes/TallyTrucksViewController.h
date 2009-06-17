@@ -11,7 +11,10 @@
 @interface TallyTrucksViewController : UIViewController {
 	IBOutlet UIButton *button;
 	int i;
+	NSUndoManager *undoManager;
 }
+
+@property (nonatomic,retain) NSUndoManager *undoManager;
 
 -(IBAction)buttonPressed;
 -(void)addATruck;

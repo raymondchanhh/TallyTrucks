@@ -10,6 +10,7 @@
 
 @implementation TallyTrucksViewController
 
+@synthesize undoManager;
 
 -(IBAction)buttonPressed {
 	[self addATruck];
@@ -17,11 +18,14 @@
 
 -(void)addATruck {
 	i += 1;
+	[[undoManager prepareWithInvocationTarget:self] removeATruck];
+	[undoManager setActionName:@"Add A Truck"];
 	[self updateTitle];
 }
 
 -(void)removeATruck {
 	i -= 1;
+	[[undoManager prepareWithInvocationTarget:self] addATruck];	
 	[self updateTitle];
 }
 
@@ -38,13 +42,23 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 	i = 0;
+	undoManager = [[NSUndoManager alloc] init];
 }
 
-/*
- -(void)viewDidAppear:(BOOL)animated {
- [super viewDidAppear:animated];
- }
- */
+-(BOOL)canBecomeFirstResponder {
+	return YES;
+}
+
+-(void)viewDidAppear:(BOOL)animated {
+	[super viewDidAppear:animated];
+	[self becomeFirstResponder];
+	
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+	[self resignFirstResponder];
+	[super viewWillDisappear:animated];
+}
 
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
@@ -61,6 +75,7 @@
 }
 
 - (void)dealloc {
+	[undoManager release];
     [super dealloc];
 }
 
